@@ -150,6 +150,6 @@ Security & license note for teachers
 - This code is intentionally simplified for teaching and is NOT production-ready: PINs and admin passwords are stored in plain text and an admin shortcut exists to make demos quick. Use it only for teaching.
 - License: this repository is published under the MIT License (see LICENSE). Teachers may reuse, adapt, and redistribute the code for classroom use. Please retain the LICENSE file and add a short attribution such as "Based on SecureBank by Adithya S (testcom314)" when redistributing. The MIT license grants permission to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software. It also includes a standard disclaimer of warranty.
 
-## Notes for future readers / contributors
+## Important note
 
-{
+-This is an educational project. The current database stores PINs and admin passwords as plain text and the admin workspace is intentionally direct-access to match the requested classroom workflow. Use this repo as a learning tool and do not deploy it to production without addressing the security issues described in TECHNICAL_ARCHITECTURE.md.

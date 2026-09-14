@@ -152,4 +152,4 @@ Security & license note for teachers
 
 ## Important note
 
--This is an educational project. The current database stores PINs and admin passwords as plain text and the admin workspace is intentionally direct-access to match the requested classroom workflow. Use this repo as a learning tool and do not deploy it to production without addressing the security issues described in TECHNICAL_ARCHITECTURE.md.
+This is an educational project. The current database stores PINs and admin passwords as plain text and the admin workspace is intentionally direct-access to match the requested classroom workflow. Use this repo as a learning tool and do not deploy it to production without addressing the security issues described in TECHNICAL_ARCHITECTURE.md.

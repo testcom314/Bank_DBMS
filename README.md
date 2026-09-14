@@ -4,6 +4,10 @@
 
 SecureBank is a small CustomTkinter and MySQL banking application. It includes customer account creation, customer sign in, deposits, withdrawals, transfers, transaction history, and a direct admin workspace for classroom use.
 
+## Student project note & executive summary
+
+This repository contains my 12th‑grade final project: a small classroom banking application (SecureBank) built with CustomTkinter and MySQL. The goal of the project is to demonstrate a simple three‑layer desktop architecture, basic GUI programming patterns, and parameterized SQL operations. I am keeping the repository public so other students and developers can read the code, reuse ideas, and learn from the implementation.
+
 ## Run it
 
 1. Install the dependencies:
@@ -38,9 +42,6 @@ Existing databases need the phone-column migration in `setup_database.sql` befor
 | `STUDENT_GUIDE.md` | Detailed teaching guide with code explanations and viva questions |
 | `TECHNICAL_ARCHITECTURE.md` | Technical view of modules, data flow, database contracts, and testing |
 
-## Student project note & executive summary
-
-This repository contains my 12th‑grade final project: a small classroom banking application (SecureBank) built with CustomTkinter and MySQL. The goal of the project is to demonstrate a simple three‑layer desktop architecture, basic GUI programming patterns, and parameterized SQL operations. I am keeping the repository public so other students and developers can read the code, reuse ideas, and learn from the implementation.
 
 ## Quick prerequisites / environment
 

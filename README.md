@@ -10,31 +10,13 @@ This repository contains my 12th‑grade final project: a small classroom bankin
 
 This repository is intended as a starter template and learning tool for 12th‑grade projects. It is designed to be easy to run and modify in the classroom. Security and robustness are intentionally simplified for teaching: PINs and the admin password are stored in plain text and some production practices are omitted. You are encouraged to fork this project, experiment, and publish your own improvements or versions. Please keep the MIT license when redistributing.
 
-## Run it
-
-1. Install the dependencies:
-
-```text
-pip install -r requirements.txt
-```
-
-2. Run `setup_database.sql` in MySQL Workbench or the MySQL command line.
-
-3. Update the credentials in `config.py`.
-
-4. Start the application:
-
-```text
-python main.py
-```
-
 ## Quick Start - run in 5 minutes
 
 1. Copy the example env file and edit it with your MySQL credentials:
    - cp .env.example .env  (then edit .env)
 2. Create the database schema:
    - mysql -u root -p < setup_database.sql
-3. Load the demo data:
+3. Load the demo data (included in this repo):
    - mysql -u root -p bank_db < seed_demo.sql
 4. Install Python dependencies and run the app:
    - pip install -r requirements.txt
@@ -60,7 +42,6 @@ Existing databases need the phone-column migration in `setup_database.sql` befor
 | `STUDENT_GUIDE.md` | Detailed teaching guide with code explanations and viva questions |
 | `TECHNICAL_ARCHITECTURE.md` | Technical view of modules, data flow, database contracts, and testing |
 
-
 ## Quick prerequisites / environment
 
 - Python 3.10+ recommended
@@ -72,7 +53,7 @@ pip install -r requirements.txt
 
 ## Example environment configuration (recommended)
 
-Before running the app, either edit `config.py` or create an environment file with the connection values. Example `.env` / variables:
+Before running the app, either edit `config.py` or use an environment file with the connection values. Example `.env` variables:
 
 ```text
 MYSQL_HOST=localhost
@@ -83,8 +64,6 @@ MYSQL_DATABASE=bank_db
 
 Copy `.env.example` to `.env` and replace the values, or set equivalent environment variables; do not commit `.env` with real credentials.
 
-If you keep `config.py` as-is for classroom demos, remember to remove any real credentials before publishing.
-
 ## Quick database setup (mysql CLI)
 
 Create the database and run the schema with the MySQL command line:
@@ -92,13 +71,7 @@ Create the database and run the schema with the MySQL command line:
 mysql -u root -p < setup_database.sql
 ```
 
-Optional: a tiny seed file helps make demos repeatable. Create `seed_demo.sql` with entries like:
-```sql
-INSERT INTO accounts (acc_no, name, pin, phone, balance) VALUES
-('100001', 'Alice Student', '1234', '9876543210', 1000.00),
-('100002', 'Bob Learner',  '4321', '9123456789', 500.00);
-```
-Then load it with:
+Load provided demo rows (seed_demo.sql) to make demos repeatable:
 ```bash
 mysql -u root -p bank_db < seed_demo.sql
 ```
@@ -155,6 +128,18 @@ Do not run tests against a production database. Use a dedicated test DB instance
 - MySQL connection refused: check that the server is running and credentials in `config.py` are correct.  
 - Missing phone column errors: if you are reusing an old database, run the migration in `setup_database.sql` to add the phone column.
 
+## For teachers
+
+This repository is designed as a starter template and learning tool for 12th‑grade projects. It is suitable for short classroom labs or final project demonstrations. Suggested teacher guidance:
+
+- Learning goals: students should understand the UI → data layer → DB flow, parameterized SQL, and simple GUI event handling.
+- Setup for classroom demos:
+  - Load the demo rows before the lab: `mysql -u root -p bank_db < seed_demo.sql`.
+  - Recommend each student use a local MySQL instance or provide a pre-configured environment.
+- Assessment suggestions: focus on functionality (signup, login, deposit/withdraw/transfer), code understanding (ability to trace and explain the flow), and small improvements (input validation, defensive checks).
+
+Please keep the MIT license when reusing or redistributing this repository.
+
 ## Notes for future readers / contributors
 
 If you plan to reuse or extend this project, these small changes make it easier for others:
@@ -166,10 +151,6 @@ If you plan to reuse or extend this project, these small changes make it easier 
 ## License
 
 Licensed under the MIT License (see the LICENSE file). Please retain the license and copyright notice when redistributing; a brief credit to "Adithya S (testcom314)" in the README or About page is appreciated.
-
-## About the credit badges
-
-Two small badges near the top of this README point to my GitHub profile and the LICENSE file. They are a quick, friendly way to see authorship and license information; the legal requirement for a[...]
 
 ## Important note
 

@@ -148,7 +148,7 @@ Licensed under the MIT License (see the LICENSE file). Please retain the license
 
 ## About the credit badges
 
-Two small badges near the top of this README point to my GitHub profile and the LICENSE file. They are a quick, human-friendly way to see authorship and license information; the legal requirement for attribution is the license text itself.
+Two small badges near the top of this README point to my GitHub profile and the LICENSE file. They are a quick, friendly way to see authorship and license information; the legal requirement for attribution is the license text itself.
 
 ## Important note
 

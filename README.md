@@ -10,6 +10,28 @@ This repository contains my 12th‑grade final project: a small classroom bankin
 
 This repository is intended as a starter template and learning tool for 12th‑grade projects. It is designed to be easy to run and modify in the classroom. Security and robustness are intentionally simplified for teaching: PINs and the admin password are stored in plain text and some production practices are omitted. You are encouraged to fork this project, experiment, and publish your own improvements or versions. Please keep the MIT license when redistributing.
 
+## For teachers
+
+This repository is designed as a straightforward starter template and learning tool for 12th‑grade projects. It is suitable for short classroom labs or final project demonstrations.
+
+What students should learn
+- UI → data layer → DB flow and how a UI event triggers DB work.
+- Safe SQL usage (parameterized queries) and where validation currently happens.
+- Practical limitations in simple classroom apps (plain-text secrets, no background workers, use of float for money).
+
+Classroom setup (suggestions)
+- Load the demo rows before the lab: `mysql -u root -p bank_db < seed_demo.sql`.
+- Recommend each student use a local MySQL instance, or provide a pre-configured VM/container.
+- For simple classroom grading, ask students to demonstrate one end-to-end scenario (signup → login → deposit/withdraw/transfer) and explain one improvement they'd make.
+
+Assessment guidance (high level)
+- Focus on correctness and understanding: can the student run the demo, trace code, and explain where a bug or security gap is and how to fix it?
+- For small extension tasks, useful student exercises include: moving credentials to env variables, switching money to Decimal, or adding defensive checks in the data layer.
+
+Extra Note 
+- This code is intentionally simplified for teaching and is NOT production-ready, Use it only for teaching.
+- This is also this repository is published under the MIT License (see LICENSE). Teachers may reuse, adapt, and redistribute the code for classroom use. Please retain the LICENSE file and add a short attribution such as "Based on SecureBank by Adithya S (testcom314)" when redistributing.
+
 ## Quick Start - run in 5 minutes
 
 1. Copy the example env file and edit it with your MySQL credentials:
@@ -128,28 +150,11 @@ Do not run tests against a production database. Use a dedicated test DB instance
 - MySQL connection refused: check that the server is running and credentials in `config.py` are correct.  
 - Missing phone column errors: if you are reusing an old database, run the migration in `setup_database.sql` to add the phone column.
 
-## For teachers
-
-This repository is designed as a straightforward starter template and learning tool for 12th‑grade projects. It is suitable for short classroom labs or final project demonstrations.
-
-What students should learn
-- UI → data layer → DB flow and how a UI event triggers DB work.
-- Safe SQL usage (parameterized queries) and where validation currently happens.
-- Practical limitations in simple classroom apps (plain-text secrets, no background workers, use of float for money).
-
-Classroom setup (suggestions)
-- Load the demo rows before the lab: `mysql -u root -p bank_db < seed_demo.sql`.
-- Recommend each student use a local MySQL instance, or provide a pre-configured VM/container.
-- For simple classroom grading, ask students to demonstrate one end-to-end scenario (signup → login → deposit/withdraw/transfer) and explain one improvement they'd make.
-
-Assessment guidance (high level)
-- Focus on correctness and understanding: can the student run the demo, trace code, and explain where a bug or security gap is and how to fix it?
-- For small extension tasks, useful student exercises include: moving credentials to env variables, switching money to Decimal, or adding defensive checks in the data layer.
-
 ## Security & license note
 
 - This code is intentionally simplified for teaching and is NOT production-ready: PINs and admin passwords are stored in plain text and an admin shortcut exists to make demos quick. Use it only for teaching.
 - License: this repository is published under the MIT License (see LICENSE). Teachers may reuse, adapt, and redistribute the code for classroom use. Please retain the LICENSE file and add a short attribution such as "Based on SecureBank by Adithya S (testcom314)" when redistributing. The MIT license grants permission to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software. It also includes a standard disclaimer of warranty.
+- The badges provide a convenient, at a glance way to show the author and license; the full legal terms are contained in the LICENSE file.  
 
 ## Important note
 

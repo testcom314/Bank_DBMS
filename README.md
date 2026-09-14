@@ -1,5 +1,7 @@
 # SecureBank
 
+[![Author: Adithya S (testcom314)](https://img.shields.io/badge/author-Adithya%20S%20%28testcom314%29-blue?style=flat-square)](https://github.com/testcom314) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
+
 SecureBank is a small CustomTkinter and MySQL banking application. It includes customer account creation, customer sign in, deposits, withdrawals, transfers, transaction history, and a direct admin workspace for classroom use.
 
 ## Run it
@@ -143,6 +145,10 @@ If you plan to reuse or extend this project, these small changes make it easier 
 ## License
 
 Licensed under the MIT License (see the LICENSE file). Please retain the license and copyright notice when redistributing; a brief credit to "Adithya S (testcom314)" in the README or About page is appreciated.
+
+## About the credit badges
+
+Two small badges near the top of this README point to my GitHub profile and the LICENSE file. They are a quick, human-friendly way to see authorship and license information; the legal requirement for attribution is the license text itself.
 
 ## Important note
 

@@ -55,7 +55,7 @@ pip install -r requirements.txt
 
 Before running the app, either edit `config.py` or use an environment file with the connection values. Example `.env` variables:
 
-```text
+```env
 MYSQL_HOST=localhost
 MYSQL_USER=root
 MYSQL_PASSWORD=yourpassword
@@ -130,28 +130,26 @@ Do not run tests against a production database. Use a dedicated test DB instance
 
 ## For teachers
 
-This repository is designed as a starter template and learning tool for 12th‑grade projects. It is suitable for short classroom labs or final project demonstrations. Suggested teacher guidance:
+This repository is designed as a straightforward starter template and learning tool for 12th‑grade projects. It is suitable for short classroom labs or final project demonstrations.
 
-- Learning goals: students should understand the UI → data layer → DB flow, parameterized SQL, and simple GUI event handling.
-- Setup for classroom demos:
-  - Load the demo rows before the lab: `mysql -u root -p bank_db < seed_demo.sql`.
-  - Recommend each student use a local MySQL instance or provide a pre-configured environment.
-- Assessment suggestions: focus on functionality (signup, login, deposit/withdraw/transfer), code understanding (ability to trace and explain the flow), and small improvements (input validation, defensive checks).
+What students should learn
+- UI → data layer → DB flow and how a UI event triggers DB work.
+- Safe SQL usage (parameterized queries) and where validation currently happens.
+- Practical limitations in simple classroom apps (plain-text secrets, no background workers, use of float for money).
 
-Please keep the MIT license when reusing or redistributing this repository.
+Classroom setup (suggestions)
+- Load the demo rows before the lab: `mysql -u root -p bank_db < seed_demo.sql`.
+- Recommend each student use a local MySQL instance, or provide a pre-configured VM/container.
+- For simple classroom grading, ask students to demonstrate one end-to-end scenario (signup → login → deposit/withdraw/transfer) and explain one improvement they'd make.
+
+Assessment guidance (high level)
+- Focus on correctness and understanding: can the student run the demo, trace code, and explain where a bug or security gap is and how to fix it?
+- For small extension tasks, useful student exercises include: moving credentials to env variables, switching money to Decimal, or adding defensive checks in the data layer.
+
+Security & license note for teachers
+- This code is intentionally simplified for teaching and is NOT production-ready: PINs and admin passwords are stored in plain text and an admin shortcut exists to make demos quick. Use it only for teaching.
+- License: this repository is published under the MIT License (see LICENSE). Teachers may reuse, adapt, and redistribute the code for classroom use. Please retain the LICENSE file and add a short attribution such as "Based on SecureBank by Adithya S (testcom314)" when redistributing. The MIT license grants permission to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software. It also includes a standard disclaimer of warranty.
 
 ## Notes for future readers / contributors
 
-If you plan to reuse or extend this project, these small changes make it easier for others:
-
-- Move DB credentials out of `config.py` and read them from environment variables.
-- Add a `SEED.sql` for demo accounts and a short `DEMO.md` that lists demo credentials.
-- Add a few screenshots and an ER diagram to make the README self-contained.
-
-## License
-
-Licensed under the MIT License (see the LICENSE file). Please retain the license and copyright notice when redistributing; a brief credit to "Adithya S (testcom314)" in the README or About page is appreciated.
-
-## Important note
-
-This is an educational project. The current database stores PINs and admin passwords as plain text and the admin workspace is intentionally direct-access to match the requested classroom workflow. Use this repo as a learning tool and do not deploy it to production without addressing the security issues described in TECHNICAL_ARCHITECTURE.md.
+{

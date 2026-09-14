@@ -146,7 +146,8 @@ Assessment guidance (high level)
 - Focus on correctness and understanding: can the student run the demo, trace code, and explain where a bug or security gap is and how to fix it?
 - For small extension tasks, useful student exercises include: moving credentials to env variables, switching money to Decimal, or adding defensive checks in the data layer.
 
-Security & license note for teachers
+## Security & license note
+
 - This code is intentionally simplified for teaching and is NOT production-ready: PINs and admin passwords are stored in plain text and an admin shortcut exists to make demos quick. Use it only for teaching.
 - License: this repository is published under the MIT License (see LICENSE). Teachers may reuse, adapt, and redistribute the code for classroom use. Please retain the LICENSE file and add a short attribution such as "Based on SecureBank by Adithya S (testcom314)" when redistributing. The MIT license grants permission to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software. It also includes a standard disclaimer of warranty.
 

@@ -48,11 +48,6 @@ If you're using this repository for classwork or a final demo, here's a simple s
 6. Try a small change: add a print statement, change a label, or tweak validation. Re-run and observe the effect. Small edits are the best way to learn.
 7. Prepare for your demo: choose 3–4 scenarios to show (signup → login → deposit; withdrawal with insufficient funds; transfer between accounts; admin account listing). Rehearse the steps and the expected results so you can demonstrate reliably.
 
-Notes to avoid "AI-sounding" phrasing in reports:
-- Write explanations in your own words and use short, concrete sentences.
-- Include screenshots and short captions showing the exact UI state youll demo.
-- Cite specific files and line numbers when you explain code behavior (for example: `main.py` lines 175–187 handle the login flow).
-
 ## Important note
 
 This is an educational project. The current database stores PINs and admin passwords as plain text and the admin workspace is intentionally direct-access to match the requested classroom workflow. Do not use this code as-is for any real banking or production system.

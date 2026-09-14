@@ -36,17 +36,113 @@ Existing databases need the phone-column migration in `setup_database.sql` befor
 | `STUDENT_GUIDE.md` | Detailed teaching guide with code explanations and viva questions |
 | `TECHNICAL_ARCHITECTURE.md` | Technical view of modules, data flow, database contracts, and testing |
 
-## How to study this project (for students)
+## Student project note & executive summary
 
-If you're using this repository for classwork or a final demo, here's a simple study path that focuses on concepts first and code second. The notes below are written plainly so you can adapt them into your own words for reports and presentations.
+This repository contains my 12th‑grade final project: a small classroom banking application (SecureBank) built with CustomTkinter and MySQL. The goal of the project is to demonstrate a simple three‑layer desktop architecture, basic GUI programming patterns, and parameterized SQL operations. I am keeping the repository public so other students and developers can read the code, reuse ideas, and learn from the implementation.
 
-1. Start with CONCEPTS.md — read this first to learn the key ideas and terminology used across the project. Its a short, high-level summary and the fastest way to get oriented.
-2. Walk through STUDENT_GUIDE.md next — it explains the GUI flow, common Python/Tkinter patterns (callbacks, closures, pack), and shows example code snippets you should understand for viva questions.
-3. Read TECHNICAL_ARCHITECTURE.md for the system-level view: how the UI, data layer, and MySQL fit together, plus function contracts and known risks.
-4. Run the app locally (see Run it). Interact with the UI: create an account, deposit, withdraw, transfer, and use the admin tabs. Hands-on use makes the concepts concrete.
-5. Open the code: read `main.py` and `database.py` side-by-side. Try to trace one full action (for example, Transfer): which UI callback runs, what validation happens, which database functions are called, and what SQL executes.
-6. Try a small change: add a print statement, change a label, or tweak validation. Re-run and observe the effect. Small edits are the best way to learn.
-7. Prepare for your demo: choose 3–4 scenarios to show (signup → login → deposit; withdrawal with insufficient funds; transfer between accounts; admin account listing). Rehearse the steps and the expected results so you can demonstrate reliably.
+## Quick prerequisites / environment
+
+- Python 3.10+ recommended
+- MySQL 8.0+ (or a compatible MySQL server)
+- Install Python dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+## Example environment configuration (recommended)
+
+Before running the app, either edit `config.py` or create an environment file with the connection values. Example `.env` / variables:
+
+```text
+MYSQL_HOST=localhost
+MYSQL_USER=root
+MYSQL_PASSWORD=yourpassword
+MYSQL_DATABASE=bank_db
+```
+
+If you keep `config.py` as-is for classroom demos, remember to remove any real credentials before publishing.
+
+## Quick database setup (mysql CLI)
+
+Create the database and run the schema with the MySQL command line:
+```bash
+mysql -u root -p < setup_database.sql
+```
+
+Optional: a tiny seed file helps make demos repeatable. Create `seed_demo.sql` with entries like:
+```sql
+INSERT INTO accounts (acc_no, name, pin, phone, balance) VALUES
+('100001', 'Alice Student', '1234', '9876543210', 1000.00),
+('100002', 'Bob Learner',  '4321', '9123456789', 500.00);
+```
+Then load it with:
+```bash
+mysql -u root -p bank_db < seed_demo.sql
+```
+
+## Demo checklist (use this for timed presentations)
+
+Pick 3–4 of these scenarios and rehearse them in order:
+
+- Signup → Login → Deposit
+  1. Click Sign up, fill name/phone/4‑digit PIN, deposit >= 500.
+  2. Note the generated account number.
+  3. Login and deposit an amount; check balance and history.
+
+- Withdrawal with insufficient funds
+  1. Login to an account with a small balance.
+  2. Attempt to withdraw more than the balance.
+  3. Confirm the “Insufficient balance” message and unchanged balance.
+
+- Transfer and admin review
+  1. Transfer from account A to account B.
+  2. Check both accounts show TRANSFER OUT / TRANSFER IN in their histories.
+  3. Login as admin (admin / admin123) and open All transactions to review logs.
+
+Rehearse the mouse clicks and expected messages to avoid surprises during the oral demo.
+
+## How to study the code (short path for exam prep)
+
+1. Read `CONCEPTS.md` for the core ideas and terminology.  
+2. Read `STUDENT_GUIDE.md` for code examples and GUI patterns you should understand.  
+3. Read `TECHNICAL_ARCHITECTURE.md` for the system-level view and function contracts.  
+4. Trace one operation end-to-end in code (for example: Transfer). Identify the UI callback in `main.py`, the validation, and the `database.py` functions that run.  
+5. Make a tiny change (label text or print statement), run the app again, and observe the result — hands-on edits help you remember the flow.
+
+## Minimal testing idea
+
+If you want to add a simple automated check, create `tests/test_db.py` and run with pytest (use a disposable test database):
+
+```python
+# tests/test_db.py
+import database as db
+
+def test_create_and_deposit():
+    acc = db.create_account("Test User", "9999", "9000000000", 600.0)
+    db.deposit(acc, 400.0)
+    details = db.get_account_details(acc)
+    assert details[2] == 1000.0  # balance column
+```
+
+Do not run tests against a production database. Use a dedicated test DB instance.
+
+## Troubleshooting (common issues)
+
+- ImportError for customtkinter: make sure you installed the package and are using the same Python interpreter.  
+- MySQL connection refused: check that the server is running and credentials in `config.py` are correct.  
+- Missing phone column errors: if you are reusing an old database, run the migration in `setup_database.sql` to add the phone column.
+
+## Notes for future readers / contributors
+
+If you plan to reuse or extend this project, these small changes make it easier for others:
+
+- Move DB credentials out of `config.py` and read them from environment variables.
+- Add a `SEED.sql` for demo accounts and a short `DEMO.md` that lists demo credentials.
+- Add a few screenshots and an ER diagram to make the README self-contained.
+
+## License
+
+Licensed under the MIT License (see the LICENSE file). Please retain the license and copyright notice when redistributing; a brief credit to "Adithya S (testcom314)" in the README or About page is appreciated.
 
 ## Important note
 

@@ -324,7 +324,7 @@ Tkinter widgets form a tree. A widget has one parent, and the parent controls it
 root
 └── shell
     ├── sidebar
-    │   ├── bank canvas
+    │   ├── bank image label
     │   └── buttons
     └── content
         └── form
@@ -553,9 +553,43 @@ For example, `show_customer_dashboard()` clears the old login page and builds th
 
 The helpers do not hide important business logic. They only handle appearance and basic widget construction.
 
-### The bank drawing
+### Loading the bank image
 
-`draw_bank_mark()` uses a Tkinter `Canvas`. It draws a triangle for a roof and rectangles for pillars and a base. These are simple vector shapes created by code, so no image file is required.
+`draw_bank_mark()` loads `images.png` with Tkinter's built-in `PhotoImage`. The path is built with `os.path.join()` and `os.path.dirname(__file__)`, so the image can be found even when the program is started from a different current folder.
+
+Tkinter needs a Python reference to an image object. If the local variable were the only reference and then disappeared, the image could vanish from the interface. The program stores the image as `parent.logo_image` before placing it in a standard Tkinter `Label`.
+
+Compact sidebars call `image.subsample(2, 2)`. This creates a smaller copy by keeping every second pixel horizontally and vertically. The home sidebar keeps the original size.
+
+#### Why the white background becomes transparent
+
+The supplied PNG has a white background. The sidebar is dark, so displaying the file directly would show a white square around the bank. The program removes that square while loading the image:
+
+```python
+for pixel_x in range(image.width()):
+    for pixel_y in range(image.height()):
+        red, green, blue = image.get(pixel_x, pixel_y)
+        if red > 245 and green > 245 and blue > 245:
+            image.transparency_set(pixel_x, pixel_y, True)
+```
+
+This is a nested loop. The outer loop visits every horizontal position, and the inner loop visits every vertical position. Together they visit every pixel. `image.get(x, y)` reads the pixel's color as red, green, and blue values. When all three values are above 245, the color is close enough to white to be considered background. `transparency_set()` tells Tkinter not to draw that pixel.
+
+The value 245 is a threshold, not a magic definition of white. A pure white pixel is usually `(255, 255, 255)`, but an image may contain slightly off-white background pixels such as `(250, 250, 250)`. The threshold removes those too. It also means very pale artwork could accidentally become transparent, so this method is appropriate for this particular logo but not every image.
+
+This code does not remove the dark outline, teal roof, or pale columns because those pixels do not have all three channels above the threshold. Transparency is stored in the Tkinter image object; the original `images.png` file is not changed.
+
+#### Why this simple method was chosen
+
+The logo is small, so checking its pixels is quick and avoids adding Pillow or another image library. A 225 by 225 image contains 50,625 pixels, which is reasonable to process once when a page is built. If a large photograph were processed this way repeatedly, it would be inefficient. A better approach for a large asset would be to save a transparent PNG once using an image editor or process it offline during setup.
+
+#### Image formats and transparency
+
+PNG can store an alpha channel, which represents opacity. Tkinter's `PhotoImage` can also mark individual pixels transparent. JPEG is a poor choice for this logo because JPEG does not support transparency and its compression can create near-white edge pixels. GIF supports limited transparency, but PNG is the clearer choice for a logo with sharp colored shapes.
+
+#### Image path versus current folder
+
+`__file__` is the path of the Python source file. `os.path.dirname(__file__)` finds the folder containing `main.py`. Joining that folder with `images.png` means the program looks beside the source file, not only in whatever folder the terminal currently happens to use. This prevents a common error where the program works in one terminal folder but cannot find its image when launched another way.
 
 ## 5. The start screen
 
@@ -664,12 +698,6 @@ The admin page includes:
 - complete transaction history.
 
 The admin page is still a normal page inside the same window. It does not open a popup.
-
-### Why destructive actions need confirmation
-
-Deleting an account is different from changing a label on the screen: it removes the account and, because of the database foreign key, its transaction history too. The first Delete click therefore changes that row into a confirmation row with Confirm and Cancel buttons.
-
-Clearing the database is even more serious. The admin page shows a Danger zone. The clear button opens an inline confirmation panel, and the final button is disabled until the exact phrase `CLEAR BANK DATABASE` is typed. This is similar to confirmation controls used by GitHub for destructive repository actions. The database function deletes transactions first and accounts second, but leaves the `admins` table so the administrator can log in again.
 
 ## 11. MySQL basics
 

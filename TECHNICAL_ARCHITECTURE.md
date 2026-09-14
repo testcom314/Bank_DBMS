@@ -80,6 +80,36 @@ When Python runs `main.py`:
 
 Nothing after `mainloop()` runs until the window closes because the event loop owns control of the application.
 
+## 3A. Image asset pipeline
+
+The workspace contains `images.png`, a 225 by 225 PNG bank illustration. `main.py` loads it when `draw_bank_mark()` builds a sidebar:
+
+```text
+images.png beside main.py
+  |
+  v
+os.path.join(os.path.dirname(__file__), "images.png")
+  |
+  v
+tk.PhotoImage(file=image_path)
+  |
+  v
+scan every pixel and mark near-white pixels transparent
+  |
+  +-- full-size image for the welcome sidebar
+  |
+  +-- subsample(2, 2) copy for compact sidebars
+  |
+  v
+tk.Label(parent, image=image)
+```
+
+The transparency pass is an in-memory transformation. It does not rewrite the asset on disk. For each pixel, the code calls `image.get(pixel_x, pixel_y)`. If red, green, and blue are all greater than 245, it calls `image.transparency_set(..., True)`. This removes white and near-white background pixels while preserving the teal, navy, and light gray logo shapes.
+
+The threshold is a deliberate asset-specific choice. It handles an image whose background is white, but it is not a general background-removal algorithm. It can remove pale foreground pixels and does not create smooth alpha edges. For this 225 by 225 asset, the $225 \times 225 = 50{,}625$ pixel scan is small and happens only while a page is being built. Large or frequently changing images should be preprocessed offline or handled by an image library.
+
+`PhotoImage` objects must remain referenced by a live Python object. The code stores the image as `parent.logo_image` before assigning it to a Tkinter `Label`. When the page is destroyed, its parent and image reference are destroyed together. `images.png` must remain beside `main.py`; otherwise `PhotoImage` raises a file-loading error during page construction.
+
 ## 4. UI composition model
 
 The application uses a single-root, single-shell composition model:
@@ -274,46 +304,6 @@ commit
 ```
 
 The transfer writes all changes through one connection and commits once. The code does not explicitly call `rollback()` when an unexpected exception occurs. That is an important production improvement.
-
-## 10A. Destructive-action confirmation flow
-
-Account deletion is a two-step UI operation:
-
-```text
-Delete button on account row
-  |
-  v
-Replace/add confirmation row
-  |
-  +-- Cancel: destroy confirmation row
-  |
-  +-- Confirm: db.delete_account(acc_no)
-                 |
-                 v
-             refresh account list and summary
-```
-
-The account number is captured by the callback's default argument so the confirmation button acts on the intended row.
-
-Database clearing uses a typed phrase instead of a simple yes/no choice:
-
-```text
-Clear database
-  |
-  v
-Show Danger zone confirmation panel
-  |
-  v
-User types CLEAR BANK DATABASE
-  |
-  v
-Enable final button only when the text matches exactly
-  |
-  v
-DELETE transactions, then DELETE accounts, then COMMIT
-```
-
-`clear_bank_data()` deliberately does not delete from `admins`. This preserves the code-based login workflow after all customer data has been removed. Both confirmations are built inside the current tab, so they do not violate the application's single-window design.
 
 ## 11. SQL safety and current risks
 

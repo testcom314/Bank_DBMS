@@ -20,9 +20,11 @@ The `clear(parent)` function removes the widgets from the current view. The next
 
 The left sidebar is a navigation menu. Its buttons call view functions directly. Deposit, withdrawal, transfer, and history are pages in the shell rather than popup windows. The application starts with only Login, Sign up, and Exit. It starts in fullscreen mode; pressing Escape leaves fullscreen mode.
 
-## 3. The vector bank mark
+## 3. The bank image
 
-`draw_bank_mark()` uses a Tkinter `Canvas` to draw a roof, pillars, and base using polygons and rectangles. These are vector-style shapes generated at runtime, so the project does not need a downloaded image, a binary asset, or an external image library. The same function draws a smaller mark in the navigation sidebars.
+`draw_bank_mark()` loads the workspace `images.png` file with Tkinter's built-in `PhotoImage`. The function checks every pixel and marks near-white pixels transparent, removing the original white square so the image blends into the dark sidebar. Compact sidebars use `subsample(2, 2)` to make the image smaller. The image is stored on its parent frame so Tkinter keeps it alive while the page is visible.
+
+The transparency threshold is intentionally simple: red, green, and blue must all be greater than 245. This is suitable for this small logo, but it could remove very pale artwork from a different image. The source PNG is never modified; transparency exists only in the in-memory Tkinter image.
 
 ## 4. CustomTkinter widgets
 

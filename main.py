@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 
 import customtkinter as ctk
@@ -74,21 +75,18 @@ def outline(parent, text, command, width=210):
 
 
 def draw_bank_mark(parent, compact=False):
-    width = 100 if compact else 150
-    scale = 0.66 if compact else 1
-    canvas = tk.Canvas(parent, width=width, height=76 if compact else 110,
-                       bg=SIDEBAR, highlightthickness=0)
-    canvas.pack(pady=(5, 5) if compact else (20, 10))
-    center = width // 2
-    canvas.create_polygon(center, 8 * scale, 25 * scale, 30 * scale,
-                          (width - 25) * scale, 30 * scale, fill=ACCENT)
-    canvas.create_rectangle(25 * scale, 34 * scale, (width - 25) * scale,
-                            40 * scale, fill=ACCENT)
-    for x in (38, 58, 78, 98, 118):
-        canvas.create_rectangle(x * scale, 44 * scale, (x + 8) * scale,
-                                82 * scale, fill=TEXT)
-    canvas.create_rectangle(20 * scale, 84 * scale, (width - 20) * scale,
-                            92 * scale, fill=ACCENT)
+    image_path = os.path.join(os.path.dirname(__file__), "images.png")
+    image = tk.PhotoImage(file=image_path)
+    for pixel_x in range(image.width()):
+        for pixel_y in range(image.height()):
+            red, green, blue = image.get(pixel_x, pixel_y)
+            if red > 245 and green > 245 and blue > 245:
+                image.transparency_set(pixel_x, pixel_y, True)
+    if compact:
+        image = image.subsample(2, 2)
+    logo = tk.Label(parent, image=image, bg=SIDEBAR, borderwidth=0)
+    parent.logo_image = image
+    logo.pack(pady=(5, 5) if compact else (20, 10))
 
 
 def page_heading(parent, title, subtitle):
@@ -436,10 +434,9 @@ def show_admin_dashboard():
     page_heading(content, "Admin workspace", "Manage accounts and inspect activity from the same main window.")
     summary = ctk.CTkFrame(content, fg_color=CARD, corner_radius=10)
     summary.pack(fill="x", pady=(0, 12))
-    account_count_label = ctk.CTkLabel(summary, text="", font=FONT_SUB, text_color=TEXT)
-    account_count_label.pack(side="left", padx=20, pady=15)
-    total_balance_label = ctk.CTkLabel(summary, text="", font=FONT_SUB, text_color=ACCENT)
-    total_balance_label.pack(side="left", padx=20, pady=15)
+    account_count, total_balance = db.get_account_summary()
+    ctk.CTkLabel(summary, text=f"Accounts: {account_count}", font=FONT_SUB, text_color=TEXT).pack(side="left", padx=20, pady=15)
+    ctk.CTkLabel(summary, text=f"Total balance: Rs. {total_balance:,.2f}", font=FONT_SUB, text_color=ACCENT).pack(side="left", padx=20, pady=15)
     tabs = ctk.CTkTabview(content, fg_color=CARD, segmented_button_selected_color=ACCENT,
                            segmented_button_selected_hover_color=ACCENT_HOVER)
     tabs.pack(fill="both", expand=True)
@@ -452,51 +449,6 @@ def show_admin_dashboard():
     search_entry = entry(tabs.tab("Accounts"), "Search by name or account number", width=360)
     search_entry.pack(anchor="w", padx=16, pady=(10, 0))
 
-    clear_panel = ctk.CTkFrame(tabs.tab("Accounts"), fg_color="#3A2023", corner_radius=7)
-    clear_panel.pack(fill="x", padx=16, pady=(4, 8))
-    ctk.CTkLabel(clear_panel, text="Danger zone", font=FONT_SUB, text_color="#FFB4B0").pack(anchor="w", padx=14, pady=(10, 2))
-    ctk.CTkLabel(clear_panel, text="This removes every account and transaction. The admin login remains.",
-                 font=("Segoe UI", 11), text_color=TEXT).pack(anchor="w", padx=14)
-    clear_button = button(clear_panel, "Clear database", lambda: show_clear_database_confirmation(),
-                          danger=True, width=180)
-    clear_button.pack(anchor="w", padx=14, pady=10)
-
-    confirmation_panel = ctk.CTkFrame(tabs.tab("Accounts"), fg_color="#3A2023", corner_radius=7)
-
-    def update_summary():
-        account_count, total_balance = db.get_account_summary()
-        account_count_label.configure(text=f"Accounts: {account_count}")
-        total_balance_label.configure(text=f"Total balance: Rs. {total_balance:,.2f}")
-
-    def show_clear_database_confirmation():
-        clear(confirmation_panel)
-        confirmation_panel.pack(fill="x", padx=16, pady=(0, 8), before=accounts_scroll)
-        ctk.CTkLabel(confirmation_panel, text="Confirm database clearing", font=FONT_SUB,
-                     text_color="#FFB4B0").pack(anchor="w", padx=14, pady=(10, 2))
-        ctk.CTkLabel(confirmation_panel, text="Type CLEAR BANK DATABASE to enable this action.",
-                     font=("Segoe UI", 11), text_color=TEXT).pack(anchor="w", padx=14)
-        phrase_entry = entry(confirmation_panel, "Confirmation phrase", width=300)
-        phrase_entry.pack(anchor="w", padx=14, pady=8)
-        confirm_button = button(confirmation_panel, "Permanently clear data", clear_database,
-                                danger=True, width=220)
-        confirm_button.configure(state="disabled")
-        confirm_button.pack(side="left", padx=(14, 6), pady=(0, 12))
-        outline(confirmation_panel, "Cancel", confirmation_panel.pack_forget, width=100).pack(side="left", pady=(0, 12))
-
-        def check_phrase(event=None):
-            is_correct = phrase_entry.get() == "CLEAR BANK DATABASE"
-            confirm_button.configure(state="normal" if is_correct else "disabled")
-
-        phrase_entry.bind("<KeyRelease>", check_phrase)
-        phrase_entry.focus_set()
-
-    def clear_database():
-        db.clear_bank_data()
-        confirmation_panel.pack_forget()
-        refresh_accounts()
-        update_summary()
-        show_message(accounts_scroll, "All accounts and transactions were cleared. The admin login remains.")
-
     def refresh_accounts():
         clear(accounts_scroll)
         search_text = search_entry.get().strip().lower()
@@ -508,26 +460,13 @@ def show_admin_dashboard():
             row = ctk.CTkFrame(accounts_scroll, fg_color=BG, corner_radius=7)
             row.pack(fill="x", padx=2, pady=4)
             ctk.CTkLabel(row, text=f"{name}\nAccount {acc_no}  |  Rs. {balance:,.2f}\nOpened {created}", justify="left", font=FONT_LABEL, text_color=TEXT).pack(side="left", padx=14, pady=10)
-            button(row, "Delete", lambda number=acc_no: ask_delete_account(number), danger=True, width=90).pack(side="right", padx=12)
-
-    def ask_delete_account(acc_no):
-        for widget in accounts_scroll.winfo_children():
-            if getattr(widget, "account_number", None) == acc_no:
-                return
-        row = ctk.CTkFrame(accounts_scroll, fg_color="#3A2023", corner_radius=7)
-        row.account_number = acc_no
-        row.pack(fill="x", padx=2, pady=4)
-        ctk.CTkLabel(row, text=f"Delete account {acc_no}? Its transaction history will also be removed.",
-                     font=FONT_LABEL, text_color="#FFB4B0", wraplength=480).pack(side="left", padx=14, pady=10)
-        button(row, "Confirm", lambda: delete_admin_account(acc_no), danger=True, width=90).pack(side="right", padx=6)
-        outline(row, "Cancel", row.destroy, width=80).pack(side="right", padx=6)
+            button(row, "Delete", lambda number=acc_no: delete_admin_account(number), danger=True, width=90).pack(side="right", padx=12)
 
     button(tabs.tab("Accounts"), "Search / refresh", refresh_accounts, width=180).pack(anchor="w", padx=16, pady=(4, 8))
 
     def delete_admin_account(acc_no):
         deleted = db.delete_account(acc_no)
         refresh_accounts()
-        update_summary()
         if not deleted:
             show_message(accounts_scroll, f"Account {acc_no} was not found.", True)
 
@@ -543,7 +482,6 @@ def show_admin_dashboard():
             line += f"  |  Related account {related_acc}"
         ctk.CTkLabel(txn_scroll, text=f"{line}\n{txn_time}", justify="left", anchor="w", font=FONT_LABEL, text_color=TEXT, fg_color=BG, corner_radius=7).pack(fill="x", padx=2, pady=4, ipady=9)
     refresh_accounts()
-    update_summary()
 
 
 def create_admin_form(parent, refresh_accounts):

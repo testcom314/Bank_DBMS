@@ -47,16 +47,6 @@ def delete_account(acc_no):
     return deleted
 
 
-def clear_bank_data():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM transactions")
-    cursor.execute("DELETE FROM accounts")
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-
 def account_exists(acc_no):
     conn = get_connection()
     cursor = conn.cursor()
